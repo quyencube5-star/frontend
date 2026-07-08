@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FashionHub Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+  <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-danger" href="index.html">FashionHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav" aria-controls="adminNav" aria-expanded="false" aria-label="Mở menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="adminNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="index.html">Cửa hàng</a></li>
+          <li class="nav-item"><a class="nav-link" href="#productTableWrap">Sản phẩm</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container py-4">
+    <section class="row align-items-end g-3 mb-4">
+      <div class="col-12 col-lg-7">
+        <p class="text-danger fw-bold text-uppercase mb-1">Bảng điều khiển</p>
+        <h1 class="display-6 fw-bold mb-0">Quản lý sản phẩm với MockAPI</h1>
+      </div>
+      <div class="col-12 col-lg-5">
+        <div class="row g-2" id="statsGrid"></div>
+      </div>
+    </section>
+
+    <section class="row g-4">
+      <div class="col-12 col-lg-4">
+        <form class="card border-0 shadow-sm" id="productForm" novalidate>
+          <div class="card-body">
+            <h2 class="h4 fw-bold mb-3" id="formTitle">Thêm sản phẩm</h2>
+            <input type="hidden" id="productId">
+
+            <div class="mb-3">
+              <label class="form-label" for="nameInput">Tên sản phẩm</label>
+              <input class="form-control" id="nameInput" type="text">
+              <div class="invalid-feedback" id="nameError"></div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="categoryInput">Danh mục</label>
+              <select class="form-select" id="categoryInput"></select>
+              <div class="invalid-feedback" id="categoryError"></div>
+            </div>
+
+            <div class="row g-2">
+              <div class="col-12 col-sm-6 mb-3">
+                <label class="form-label" for="priceInput">Giá (VND)</label>
+                <input class="form-control" id="priceInput" type="number" min="1" step="1000">
+                <div class="invalid-feedback" id="priceError"></div>
+              </div>
+              <div class="col-12 col-sm-6 mb-3">
+                <label class="form-label" for="stockInput">Tồn kho</label>
+                <input class="form-control" id="stockInput" type="number" min="0" step="1">
+                <div class="invalid-feedback" id="stockError"></div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="sizesInput">Size</label>
+              <input class="form-control" id="sizesInput" type="text" placeholder="S, M, L">
+              <div class="form-text">Nhập nhiều size, cách nhau bằng dấu phẩy.</div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="imageInput">URL ảnh</label>
+              <input class="form-control" id="imageInput" type="url" placeholder="https://...">
+              <div class="invalid-feedback" id="imageError"></div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label" for="descriptionInput">Mô tả</label>
+              <textarea class="form-control" id="descriptionInput" rows="3"></textarea>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button class="btn btn-danger" id="submitBtn" type="submit">Lưu sản phẩm</button>
+              <button class="btn btn-outline-secondary" id="cancelEditBtn" type="button">Hủy</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="col-12 col-lg-8">
+        <div class="card border-0 shadow-sm" id="productTableWrap">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="h4 fw-bold mb-0">Danh sách sản phẩm</h2>
+              <button class="btn btn-outline-danger" id="reloadBtn" type="button">Tải lại</button>
+            </div>
+            <div class="loading-box" id="adminLoading">
+              <div class="spinner-border text-danger" role="status"></div>
+              <span>Đang tải dữ liệu...</span>
+            </div>
+            <div class="alert alert-danger d-none" id="adminError"></div>
+            <div class="table-responsive">
+              <table class="table align-middle table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Giá</th>
+                    <th>Tồn</th>
+                    <th class="text-end">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="productTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteTitle" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="deleteTitle">Xóa sản phẩm</h2>
+          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          Bạn có chắc muốn xóa <strong id="deleteProductName"></strong>?
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Hủy</button>
+          <button class="btn btn-danger" id="confirmDeleteBtn" type="button">Xóa</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-bg-dark border-0" id="toast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage"></div>
+        <button class="btn-close btn-close-white me-2 m-auto" type="button" data-bs-dismiss="toast" aria-label="Đóng"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FashionHub | Cửa hàng thời trang</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-danger" href="index.html">FashionHub</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Mở menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="#products">Sản phẩm</a></li>
+          <li class="nav-item"><a class="nav-link" href="admin.html">Admin</a></li>
+          <li class="nav-item">
+            <button class="btn btn-danger position-relative" id="openCartBtn" type="button" data-bs-toggle="modal" data-bs-target="#cartModal">
+              Giỏ hàng
+              <span class="badge text-bg-light ms-1" id="cartCount">0</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero-section">
+      <div class="container">
+        <div class="row align-items-center g-4">
+          <div class="col-12 col-lg-7">
+            <p class="text-danger fw-bold text-uppercase mb-2">Bộ sưu tập mới</p>
+            <h1 class="display-4 fw-bold mb-3">Thời trang hằng ngày, gọn gàng và dễ phối.</h1>
+            <p class="lead text-secondary mb-4">Dữ liệu sản phẩm được lấy từ MockAPI, có bộ lọc, giỏ hàng JS array và trang admin CRUD.</p>
+            <a class="btn btn-danger btn-lg shadow" href="#products">Mua ngay</a>
+          </div>
+          <div class="col-12 col-lg-5">
+            <div class="hero-visual shadow"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="py-5" id="products">
+      <div class="container">
+        <div class="row g-4">
+          <aside class="col-12 col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm filter-card">
+              <div class="card-body">
+                <h2 class="h5 fw-bold mb-3">Bộ lọc</h2>
+                <div class="mb-3">
+                  <label class="form-label" for="searchInput">Tìm kiếm</label>
+                  <input class="form-control" id="searchInput" type="search" placeholder="Áo, váy, jeans...">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="categoryFilter">Danh mục</label>
+                  <select class="form-select" id="categoryFilter"></select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="sizeFilter">Size</label>
+                  <select class="form-select" id="sizeFilter"></select>
+                </div>
+                <button class="btn btn-outline-secondary w-100" id="resetFilters" type="button">Xóa bộ lọc</button>
+              </div>
+            </div>
+          </aside>
+
+          <section class="col-12 col-md-8 col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <div>
+                <p class="text-danger fw-bold text-uppercase mb-1">FashionHub</p>
+                <h2 class="h3 fw-bold mb-0">Sản phẩm</h2>
+              </div>
+              <span class="badge text-bg-dark" id="productCount">0 sản phẩm</span>
+            </div>
+
+            <div class="loading-box" id="productLoading">
+              <div class="spinner-border text-danger" role="status"></div>
+              <span>Đang tải sản phẩm...</span>
+            </div>
+            <div class="alert alert-danger d-none" id="productError"></div>
+            <div class="row g-3" id="productGrid"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="modal-title h5" id="cartTitle">Giỏ hàng của bạn</h2>
+          <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <div id="cartPanel">
+            <div class="list-group mb-3" id="cartItems"></div>
+            <div class="border-top pt-3">
+              <div class="d-flex justify-content-between mb-2">
+                <span>Tạm tính</span>
+                <strong id="cartSubtotal">0 VND</strong>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span>Vận chuyển</span>
+                <strong id="cartShipping">0 VND</strong>
+              </div>
+              <div class="d-flex justify-content-between fs-5">
+                <span>Tổng cộng</span>
+                <strong id="cartTotal">0 VND</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Tiếp tục mua</button>
+          <button class="btn btn-danger" id="checkoutBtn" type="button">Đặt hàng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast align-items-center text-bg-dark border-0" id="toast" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastMessage"></div>
+        <button class="btn-close btn-close-white me-2 m-auto" type="button" data-bs-dismiss="toast" aria-label="Đóng"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
