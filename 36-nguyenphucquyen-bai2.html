@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>FashionHub</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+}
+
+header{
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+header h1{
+    margin-bottom:10px;
+}
+
+.container{
+    width:90%;
+    margin:auto;
+    padding:20px;
+}
+
+.controls{
+    display:flex;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+input,
+select{
+    padding:10px;
+    font-size:16px;
+}
+
+.products{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.product{
+    background:white;
+    padding:15px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    text-align:center;
+}
+
+.product img{
+    width:100%;
+    height:250px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+.product h3{
+    margin-top:10px;
+}
+
+.price{
+    color:red;
+    font-size:18px;
+    font-weight:bold;
+    margin:10px 0;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    background:black;
+    color:white;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+button:hover{
+    background:#444;
+}
+
+.cart{
+    margin-top:40px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.cart h2{
+    margin-bottom:15px;
+}
+
+.cart li{
+    margin:10px 0;
+}
+
+.total{
+    margin-top:20px;
+    font-size:22px;
+    color:red;
+    font-weight:bold;
+}
+
+footer{
+    margin-top:40px;
+    background:#111;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>FASHIONHUB</h1>
+    <p>C&#7917;a h&#224;ng th&#7901;i trang tr&#7921;c tuy&#7871;n</p>
+</header>
+
+<div class="container">
+
+    <div class="controls">
+
+        <input
+            type="text"
+            id="search"
+            placeholder="T&#236;m s&#7843;n ph&#7849;m..."
+            onkeyup="displayProducts()">
+
+        <select
+            id="category"
+            onchange="displayProducts()">
+
+            <option value="all">
+                T&#7845;t c&#7843; danh m&#7909;c
+            </option>
+
+            <option value="Ao">
+                &#193;o
+            </option>
+
+            <option value="Quan">
+                Qu&#7847;n
+            </option>
+
+            <option value="Vay">
+                V&#225;y
+            </option>
+
+            <option value="Phu kien">
+                Ph&#7909; ki&#7879;n
+            </option>
+
+        </select>
+
+    </div>
+
+    <div
+        class="products"
+        id="productList">
+    </div>
+
+    <div class="cart">
+
+        <h2>Gi&#7887; h&#224;ng</h2>
+
+        <ul id="cartList"></ul>
+
+        <div class="total">
+            T&#7893;ng ti&#7873;n:
+            <span id="total">0</span>
+            VN&#272;
+        </div>
+
+    </div>
+
+</div>
+
+<footer>
+    &#169; 2026 FashionHub
+</footer>
+
+<script>
+
+const products = [
+
+{
+    id:1,
+    name:"Áo Hoodie",
+    category:"Áo",
+    price:350000,
+    image:"https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=700&q=80"
+},
+
+{
+    id:2,
+    name:"Ao Thun",
+    category:"Ao",
+    price:250000,
+    image:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80"
+},
+
+{
+    id:3,
+    name:"Quần Jean",
+    category:"Quần",
+    price:450000,
+    image:"https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=700&q=80"
+},
+
+{
+    id:4,
+    name:"Quần Kaki",
+    category:"Quần",
+    price:400000,
+    image:"https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=700&q=80"
+},
+
+{
+    id:5,
+    name:"Áo Sơ Mi",
+    category:"Áo",
+    price:320000,
+    image:"https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=700&q=80"
+},
+
+{
+    id:6,
+    name:"váy Hoa",
+    category:"Váy",
+    price:520000,
+    image:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=80"
+},
+
+{
+    id:7,
+    name:"Áo Khoác Denim",
+    category:"Áo",
+    price:590000,
+    image:"https://images.unsplash.com/photo-1523205771623-e0faa4d2813d?auto=format&fit=crop&w=700&q=80"
+},
+
+{
+    id:8,
+    name:"Túi xách",
+    category:"Phu kien",
+    price:300000,
+    image:"https://images.unsplash.com/photo-1594223274512-ad4803739b7c?auto=format&fit=crop&w=700&q=80"
+}
+
+];
+
+let cart =
+JSON.parse(
+localStorage.getItem("cart")
+) || [];
+
+displayProducts();
+updateCart();
+
+function displayProducts(){
+
+    const keyword =
+    document
+    .getElementById("search")
+    .value
+    .toLowerCase();
+
+    const category =
+    document
+    .getElementById("category")
+    .value;
+
+    let html = "";
+
+    products
+    .filter(product => {
+
+        let matchName =
+
+        product.name
+        .toLowerCase()
+        .includes(keyword);
+
+        let matchCategory =
+
+        category === "all" ||
+
+        product.category === category;
+
+        return matchName &&
+               matchCategory;
+    })
+
+    .forEach(product => {
+
+        html += `
+
+        <div class="product">
+
+            <img src="${product.image}" alt="${product.name}">
+
+            <h3>${product.name}</h3>
+
+            <p>${product.category}</p>
+
+            <div class="price">
+                ${product.price.toLocaleString()}
+                VN&#272;
+            </div>
+
+            <button
+            onclick="addToCart(${product.id})">
+
+            Th&#234;m v&#224;o gi&#7887;
+
+            </button>
+
+        </div>
+
+        `;
+    });
+
+    document
+    .getElementById("productList")
+    .innerHTML = html;
+}
+
+function addToCart(id){
+
+    const product =
+
+    products.find(item =>
+
+        item.id === id
+
+    );
+
+    cart.push(product);
+
+    saveCart();
+
+    updateCart();
+
+    alert(
+        "Da them vao gio hang!"
+    );
+}
+
+function removeItem(index){
+
+    cart.splice(index,1);
+
+    saveCart();
+
+    updateCart();
+}
+
+function saveCart(){
+
+    localStorage.setItem(
+
+        "cart",
+
+        JSON.stringify(cart)
+
+    );
+}
+
+function updateCart(){
+
+    let html = "";
+
+    let total = 0;
+
+    cart.forEach(
+
+    (item,index)=>{
+
+        total += item.price;
+
+        html += `
+
+        <li>
+
+            ${item.name}
+
+            -
+
+            ${item.price
+            .toLocaleString()}
+
+            VN&#272;
+
+            <button
+            onclick="removeItem(${index})">
+
+            X&#243;a
+
+            </button>
+
+        </li>
+
+        `;
+    });
+
+    document
+    .getElementById("cartList")
+    .innerHTML = html;
+
+    document
+    .getElementById("total")
+    .innerText =
+    total.toLocaleString();
+}
+
+</script>
+
+</body>
+</html>
